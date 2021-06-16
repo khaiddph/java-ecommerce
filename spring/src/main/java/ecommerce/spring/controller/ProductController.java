@@ -1,7 +1,5 @@
 package ecommerce.spring.controller;
 
-import java.util.Collection;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ecommerce.spring.enties.Product;
@@ -38,11 +35,12 @@ public class ProductController {
         return this.productServiceImpl.getAll(pageable);
     }
 
-    @GetMapping("/product/search")
-    public Collection<Product> searchProducts(@RequestParam("keyword") String keyword) {
+    // @GetMapping("/product/search")
+    // public Collection<Product> searchProducts(@RequestParam("keyword") String
+    // keyword) {
 
-        return this.productRepository.searchProducts(keyword);
-    }
+    // return this.productRepository.searchProducts(keyword);
+    // }
 
     @GetMapping("/category/{category_id}/product")
     public Page<Product> getProductToCategory(@PathVariable(value = "category_id") Long category_id,

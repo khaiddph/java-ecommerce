@@ -1,15 +1,13 @@
 package ecommerce.spring.service;
 
 import java.util.Collection;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import java.util.Optional;
 
 public interface CategoryService<T> {
 
     Collection<T> getAll();
 
-    T findById(Long id);
+    Optional<T> findById(Long id);
 
     T save(T t);
 

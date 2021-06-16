@@ -1,6 +1,7 @@
 package ecommerce.spring.service.Impl;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,8 +27,8 @@ public class CategoryServiceImpl implements CategoryService<Category> {
     }
 
     @Override
-    public Category findById(Long id) {
-        return this.categoryRepository.findById(id).get();
+    public Optional<Category> findById(Long id) {
+        return this.categoryRepository.findById(id);
     }
 
     @Override
