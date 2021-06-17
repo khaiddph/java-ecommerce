@@ -18,6 +18,9 @@ import styled from 'styled-components';
 import { FcNext, FcPrevious } from 'react-icons/fc';
 import { makeStyles } from '@material-ui/core/styles';
 import { Backdrop, CircularProgress } from '@material-ui/core';
+import AddProduct from './AddProduct';
+import { Pagination, PaginationItem, PaginationLink } from 'reactstrap';
+import EditProduct from './EditProduct';
 
 const UL = styled.ul`
   display: flex;
@@ -42,10 +45,13 @@ const ListProducts = () => {
   const classes = useStyles();
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [pageNo, setPageNo] = useState(0);
   const [categoriesId, setCategoriesId] = useState(1);
+  const [pageNo, setPageNo] = useState(0);
   const [loading, setLoading] = useState(true);
   const [searched, setSearched] = useState('');
+  const [open, setOpen] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [currProduct, setCurrProduct] = useState([]);
 
   useEffect(() => {
     const getCategory = () => {
@@ -55,7 +61,7 @@ const ListProducts = () => {
       });
     };
 
-    const pageSize = 4;
+    const pageSize = 5;
     const url = `http://localhost:8080/api/category/${categoriesId}/product?page=${pageNo}&size=${pageSize}`;
 
     axios({
@@ -82,7 +88,11 @@ const ListProducts = () => {
     setCategoriesId(e.target.value);
   };
 
-  const editRow = data => {};
+  const editRow = data => {
+    setCurrProduct(data);
+    setEditing(true);
+    setOpen(false);
+  };
   const onDelete = id => {};
 
   const lastBtn = () => {
@@ -98,9 +108,22 @@ const ListProducts = () => {
       <Backdrop className={classes.backdrop} open={loading}>
         <CircularProgress color="inherit" />
       </Backdrop>
-      <Button variant="contained" color="primary">
+      <Button variant="contained" color="primary" onClick={() => setOpen(true)}>
         ADD NEW PRODUCT
       </Button>
+      {open ? <AddProduct /> : ''}
+
+      {editing ? (
+        <EditProduct
+          setEditing={setEditing}
+          setData={setProducts}
+          currentProduct={currProduct}
+          categoriesId={categoriesId}
+        />
+      ) : (
+        ''
+      )}
+
       <Row>
         <Col xs={9} md={8} sm="auto">
           <Form className={'p-3'}>
@@ -173,19 +196,17 @@ const ListProducts = () => {
           </TableBody>
         </Table>
       </TableContainer>
-      <Grid container spacing={3}>
-        <Grid item xs={4}>
-          <UL>
-            <LI>
-              <FcPrevious onClick={lastBtn} />
-            </LI>
-            <LI>{pageNo} </LI>
-            <LI>
-              <FcNext onClick={nextBtn} />
-            </LI>
-          </UL>
-        </Grid>
-      </Grid>
+      <Pagination aria-label="Page navigation example">
+        <PaginationItem>
+          <PaginationLink previous onClick={lastBtn} />
+        </PaginationItem>
+        <PaginationItem>
+          <PaginationLink>{pageNo}</PaginationLink>
+        </PaginationItem>
+        <PaginationItem>
+          <PaginationLink next onClick={nextBtn} />
+        </PaginationItem>
+      </Pagination>
     </Container>
   );
 };
