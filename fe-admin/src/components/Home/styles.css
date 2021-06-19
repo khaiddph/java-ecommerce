@@ -1,0 +1,10 @@
+.link {
+  list-style: none;
+  text-decoration: none;
+  color: #fff;
+  padding: 0 20px;
+}
+
+.link:hover {
+  color: rgb(168, 177, 152);
+}

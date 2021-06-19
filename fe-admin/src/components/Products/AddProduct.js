@@ -1,7 +1,48 @@
 import React, { useState } from 'react';
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
+import ProductServices from '../../services/ProductServices';
 
-const AddProduct = () => {
+const AddProduct = ({ categoriesId, setData, data }) => {
+  const [product, setProduct] = useState([]);
+
+  const handleInputChange = event => {
+    const { name, value } = event.target;
+    setProduct({ ...product, [name]: value });
+  };
+
+  const onSubmit = e => {
+    const body1 = {
+      categoriesId: categoriesId,
+      title: product.title,
+      imagePath: product.imagePath,
+      price: product.price,
+      quantity: product.quantity,
+    };
+    console.log(body1);
+    e.preventDefault();
+    ProductServices.save(categoriesId, body1).then(res => {
+      setData([...data, res.data]);
+      console.log(res.data);
+    });
+    // axios({
+    //   method: 'POST',
+    //   url: `http://localhost:8080/api/category/${categoriesId}/product/`,
+    //   body: body1,
+    //   headers: {
+    //     'Content-Type': 'application/x-www-form-urlencoded',
+    //   },
+    // })
+    //   .then(res => {
+    //     // setProduct([...product, res.data]);
+    //     if (res.status === 200) {
+    //       console.log(res.data);
+    //     }
+    //   })
+    //   .catch(error => {
+    //     console.log(error.res);
+    //   });
+    // console.log(product);
+  };
   return (
     <>
       <form>
@@ -13,7 +54,16 @@ const AddProduct = () => {
               name="title"
               placeholder="Enter title"
               // value={category.title}
-              //   onChange={handleInputChange}
+              onChange={handleInputChange}
+            />
+          </FormGroup>
+          <FormGroup className="mb-2">
+            <Label>Image</Label>
+            <Input
+              type="text"
+              name="imagePath"
+              // value={category.title}
+              onChange={handleInputChange}
             />
           </FormGroup>
           <FormGroup className="mb-2">
@@ -23,7 +73,7 @@ const AddProduct = () => {
               name="price"
               placeholder="Enter price"
               // value={category.title}
-              //   onChange={handleInputChange}
+              onChange={handleInputChange}
             />
           </FormGroup>
           <FormGroup className="mb-2">
@@ -33,20 +83,13 @@ const AddProduct = () => {
               name="quantity"
               placeholder="Enter quantity"
               // value={category.title}
-              //   onChange={handleInputChange}
+              onChange={handleInputChange}
             />
           </FormGroup>
-          <FormGroup className="mb-2">
-            <Label>Image</Label>
-            <Input
-              type="file"
-              name="image"
-              placeholder="Enter image"
-              // value={category.title}
-              //   onChange={handleInputChange}
-            />
-          </FormGroup>
-          <Button color="success">Submit</Button>
+
+          <Button color="success" onClick={onSubmit}>
+            Submit
+          </Button>
         </Form>
       </form>
     </>

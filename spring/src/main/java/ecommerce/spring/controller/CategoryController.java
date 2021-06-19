@@ -1,6 +1,7 @@
 package ecommerce.spring.controller;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -44,9 +45,8 @@ public class CategoryController {
   }
 
   @GetMapping("/category/{id}")
-  public ResponseEntity<Category> findById(@PathVariable Long id) {
-    Category category = this.categoryServiceImpl.findById(id);
-    return ResponseEntity.ok(category);
+  public Optional<Category> findById(@PathVariable Long id) {
+    return this.categoryServiceImpl.findById(id);
   }
 
   @PostMapping("/category")

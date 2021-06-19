@@ -11,7 +11,7 @@ public interface ProductService<T> {
 
     T saveProduct(Long categoryId, T t);
 
-    T editProduct(Long product_id, T t);
+    T editProduct(Long category_id, Long product_id, T t);
 
     void remove(Long product_id);
 

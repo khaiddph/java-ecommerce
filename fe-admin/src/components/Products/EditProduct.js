@@ -1,9 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import ProductServices from '../../services/ProductServices';
+import React, { useEffect, useState } from 'react';
+import { Button, Form, FormGroup, Input, Label } from 'reactstrap';
 
-const EditProduct = ({ currentProduct, setData, setEditing, categoriesId }) => {
+const EditProduct = ({
+  currentProduct,
+  setData,
+  setEditing,
+  categoriesId,
+  data,
+  categories,
+}) => {
   const [product, setProduct] = useState(currentProduct);
+  console.log(currentProduct);
 
   const handleInputChange = event => {
     const { name, value } = event.target;
@@ -12,29 +20,28 @@ const EditProduct = ({ currentProduct, setData, setEditing, categoriesId }) => {
 
   useEffect(() => {
     setProduct(currentProduct);
+    // setCategoriesId(categoriesId);
   }, [currentProduct]);
 
-  const onEdit = () => {
-    let newData = {
-      id: product.id,
-      title: product.title,
-      price: product.price,
-      quantity: product.quantity,
-    };
-    ProductServices.update(categoriesId, product.id, newData).then(res => {
-      // setData(oldState => {
-      //   let newState;
-      //   newState = oldState.map(product => {
-      //     return product.id === res.data.id ? res.data : product;
-      //   });
-      //   return newState;
-      // });
+  console.log(categories);
+
+  const onEdit = e => {
+    e.preventDefault();
+
+    ProductServices.update(categoriesId, product.id, product).then(res => {
+      // setData([...data, res.data]);
+      // console.log(res.data);
+      setData(oldState => {
+        let newState;
+        newState = oldState.map(product => {
+          return product.id === res.data.id ? res.data : product;
+        });
+        return newState;
+      });
+      console.log(res.data);
       setEditing(false);
     });
-    console.log(newData.id);
   };
-  console.log('ca', categoriesId);
-  // console.log(product.id);
   return (
     <>
       <form>
@@ -46,6 +53,15 @@ const EditProduct = ({ currentProduct, setData, setEditing, categoriesId }) => {
               name="title"
               placeholder="Enter title"
               value={product.title}
+              onChange={handleInputChange}
+            />
+          </FormGroup>
+          <FormGroup className="mb-2">
+            <Label>Image</Label>
+            <Input
+              type="text"
+              name="imagePath"
+              value={product.imagePath}
               onChange={handleInputChange}
             />
           </FormGroup>

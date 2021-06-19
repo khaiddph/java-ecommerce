@@ -30,12 +30,12 @@ public class Orders {
 
     private Float totalPrice;
 
-    private String status;
+    // private String status;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_name")
-    // @OnDelete(action = OnDeleteAction.CASCADE)
-    private Account account;
+    // @ManyToOne(fetch = FetchType.EAGER)
+    // @JoinColumn(name = "user_name")
+    // // @OnDelete(action = OnDeleteAction.CASCADE)
+    // private Account account;
 
     // @JsonIgnore
     // @OneToMany(mappedBy = "orders")

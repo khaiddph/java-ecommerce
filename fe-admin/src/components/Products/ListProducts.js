@@ -8,31 +8,16 @@ import {
   TableRow,
   TableCell,
   TableBody,
-  Grid,
   Button,
 } from '@material-ui/core';
 import { FaEdit } from 'react-icons/fa';
 import { AiTwotoneDelete } from 'react-icons/ai';
 import axios from 'axios';
-import styled from 'styled-components';
-import { FcNext, FcPrevious } from 'react-icons/fc';
 import { makeStyles } from '@material-ui/core/styles';
 import { Backdrop, CircularProgress } from '@material-ui/core';
 import AddProduct from './AddProduct';
 import { Pagination, PaginationItem, PaginationLink } from 'reactstrap';
 import EditProduct from './EditProduct';
-
-const UL = styled.ul`
-  display: flex;
-  list-style: none;
-`;
-const LI = styled.li`
-  padding: 5px 11px;
-  border: 1px solid;
-  border-radius: 50%;
-  margin: 10px;
-  cursor: pointer;
-`;
 
 const useStyles = makeStyles(theme => ({
   backdrop: {
@@ -46,7 +31,7 @@ const ListProducts = () => {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [categoriesId, setCategoriesId] = useState(1);
-  const [pageNo, setPageNo] = useState(0);
+  const [pageNo, setPageNo] = useState(1);
   const [loading, setLoading] = useState(true);
   const [searched, setSearched] = useState('');
   const [open, setOpen] = useState(false);
@@ -61,8 +46,11 @@ const ListProducts = () => {
       });
     };
 
-    const pageSize = 5;
-    const url = `http://localhost:8080/api/category/${categoriesId}/product?page=${pageNo}&size=${pageSize}`;
+    const pageSize = 4;
+
+    const url = `http://localhost:8080/api/category/${categoriesId}/product?page=${
+      pageNo - 1
+    }&size=${pageSize}`;
 
     axios({
       method: 'GET',
@@ -93,16 +81,25 @@ const ListProducts = () => {
     setEditing(true);
     setOpen(false);
   };
-  const onDelete = id => {};
+  const onDelete = id => {
+    let confirm = window.confirm('Are you sure?');
+    if (confirm) {
+      ProductServices.deleteById(id).then(res => {
+        setProducts(products.filter(products => products.id !== id));
+      });
+    }
+  };
 
   const lastBtn = () => {
-    setPageNo(pageNo - 1);
+    if (pageNo > 1) {
+      setPageNo(pageNo - 1);
+    }
   };
 
   const nextBtn = () => {
     setPageNo(pageNo + 1);
   };
-
+  console.log(products);
   return (
     <Container>
       <Backdrop className={classes.backdrop} open={loading}>
@@ -111,7 +108,15 @@ const ListProducts = () => {
       <Button variant="contained" color="primary" onClick={() => setOpen(true)}>
         ADD NEW PRODUCT
       </Button>
-      {open ? <AddProduct /> : ''}
+      {open ? (
+        <AddProduct
+          categoriesId={categoriesId}
+          setData={setProducts}
+          data={products}
+        />
+      ) : (
+        ''
+      )}
 
       {editing ? (
         <EditProduct
@@ -119,6 +124,9 @@ const ListProducts = () => {
           setData={setProducts}
           currentProduct={currProduct}
           categoriesId={categoriesId}
+          setCategoriesId={setCategoriesId}
+          data={products}
+          categories={categories}
         />
       ) : (
         ''
@@ -159,7 +167,6 @@ const ListProducts = () => {
         <Table aria-label="customized table">
           <TableHead>
             <TableRow>
-              {/* <TableCell>ID</TableCell> */}
               <TableCell>Image</TableCell>
               <TableCell>Title</TableCell>
               <TableCell>Price</TableCell>
@@ -172,7 +179,12 @@ const ListProducts = () => {
               products.map((val, idx) => (
                 <TableRow key={idx}>
                   <TableCell>
-                    <img src={val.image_path} alt={val.title} />{' '}
+                    <img
+                      // src={`http://localhost:8080//${val.imagePath}`}
+                      src={val.imagePath}
+                      alt={val.title}
+                      width="100px"
+                    />{' '}
                   </TableCell>
                   <TableCell>{val.title} </TableCell>
                   <TableCell>{val.price} </TableCell>

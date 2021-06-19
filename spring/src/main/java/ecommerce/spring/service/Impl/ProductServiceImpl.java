@@ -1,5 +1,8 @@
 package ecommerce.spring.service.Impl;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,6 +15,8 @@ import ecommerce.spring.service.ProductService;
 
 @Service
 public class ProductServiceImpl implements ProductService<Product> {
+
+    private static final Path CURRENT_FOLDER = Paths.get(System.getProperty("user.dir"));
 
     @Autowired
     private ProductRepository productRepository;
@@ -29,22 +34,49 @@ public class ProductServiceImpl implements ProductService<Product> {
     // return this.productRepository.findByCategoryId(id);
     // }
 
-    @Override
+    // @Override
     public Product saveProduct(Long categoryId, Product product) {
         return this.categoryRepository.findById(categoryId).map(category -> {
             product.setCategory(category);
             return productRepository.save(product);
         }).orElseThrow(() -> new RuntimeException("product not found"));
+
+        // Product product = new Product();
+        // Path staticPath = Paths.get("static");
+        // Path imagePath = Paths.get("images");
+
+        // if (!Files.exists(CURRENT_FOLDER.resolve(staticPath).resolve(imagePath))) {
+        // Files.createDirectories(CURRENT_FOLDER.resolve(staticPath).resolve(imagePath));
+        // }
+        // Path file =
+        // CURRENT_FOLDER.resolve(staticPath).resolve(imagePath).resolve(image.getOriginalFilename());
+        // try (OutputStream os = Files.newOutputStream(file)) {
+        // os.write(image.getBytes());
+        // }
+        // return this.categoryRepository.findById(categoryId).map(category -> {
+
+        // product.setCategory(category);
+        // product.setTitle(title);
+        // product.setImagePath(imagePath.resolve(image.getOriginalFilename()).toString());
+        // product.setPrice(price);
+        // product.setQuantity(quantity);
+        // return productRepository.save(product);
+        // }).orElseThrow(() -> new RuntimeException("product not found"));
+
     }
 
     @Override
-    public Product editProduct(Long product_id, Product product) {
-        return productRepository.findById(product_id).map(currentProduct -> {
-            currentProduct.setTitle(currentProduct.getTitle());
-            currentProduct.setImagePath(currentProduct.getImagePath());
-            currentProduct.setPrice(currentProduct.getPrice());
-            return productRepository.save(product);
+    public Product editProduct(Long category_id, Long product_id, Product product) {
+        return categoryRepository.findById(category_id).map(category -> {
+            return productRepository.findById(product_id).map(currentProduct -> {
+                currentProduct.setTitle(currentProduct.getTitle());
+                currentProduct.setImagePath(currentProduct.getImagePath());
+                currentProduct.setPrice(currentProduct.getPrice());
+                currentProduct.setCategory(category);
+                return productRepository.save(product);
+            }).orElseThrow(() -> new RuntimeException("product not found"));
         }).orElseThrow(() -> new RuntimeException("product not found"));
+
     }
 
     @Override

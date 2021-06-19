@@ -1,10 +1,9 @@
 package ecommerce.spring.controller;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -49,18 +48,29 @@ public class ProductController {
     }
 
     @PostMapping("/category/{category_id}/product")
-    public Product createProductToCategory(@PathVariable Long category_id, @Valid @RequestBody Product product) {
+    public Product createProductToCategory(@PathVariable Long category_id, @RequestBody Product product) {
         return this.productServiceImpl.saveProduct(category_id, product);
     }
+    // @PostMapping("/category/{category_id}/product")
+    // @ResponseStatus(HttpStatus.CREATED)
+    // public Product createProductToCategory(@PathVariable Long category_id,
+    // @RequestParam String title,
+    // @RequestParam MultipartFile image, @RequestParam Float price, @RequestParam
+    // int quantity)
+    // throws IOException {
+    // return this.productServiceImpl.saveProduct(category_id, title, image, price,
+    // quantity);
+    // }
 
     @PutMapping("/category/{category_id}/product/{product_id}")
-    public Product updateProductToCategory(@PathVariable Long product_id, @RequestBody Product product) {
+    public Product updateProductToCategory(@PathVariable Long category_id, @PathVariable Long product_id,
+            @RequestBody Product product) {
 
-        return this.productServiceImpl.editProduct(product_id, product);
+        return this.productServiceImpl.editProduct(category_id, product_id, product);
     }
 
     @DeleteMapping("/product/{id}")
-    public void remove(@PathVariable Long id, @RequestBody Product product) {
+    public void remove(@PathVariable Long id) {
         this.productServiceImpl.remove(id);
     }
 

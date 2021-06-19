@@ -34,14 +34,24 @@ public class OrderController {
     private OrderRepository orderRepository;
 
     @GetMapping("/order")
-    public Page<Orders> getAll(Pageable pageable) {
+    public Page<Orders> getOrders(Pageable pageable) {
         return this.orderRepository.findAll(pageable);
     }
 
-    @GetMapping("/order/search")
-    public Collection<Orders> searchOrders(@RequestParam String keyword) {
-        return this.orderRepository.searchOrders(keyword);
+    // @GetMapping("/order")
+    // {
+    // return this.orderRepository.getOrders(keyword, pageable);
+    // }
+
+    @PostMapping("/order")
+    public Orders save(@RequestBody Orders order) {
+        return this.orderServiceImpl.saveOrder(order);
     }
+
+    // @GetMapping("/order/search")
+    // public Collection<Orders> searchOrders(@RequestParam String keyword) {
+    // return this.orderRepository.searchOrders(keyword);
+    // }
 
     // @GetMapping("/account/{user_name}/order")
     // public Page<Orders> getOrderToAccount(@PathVariable(value = "user_name")
@@ -49,21 +59,22 @@ public class OrderController {
     // return orderRepository.findOrderByAccount(user_name, pageable);
     // }
 
-    @GetMapping("/account/{user_name}/order")
-    public Page<Orders> getProductToCategory(@RequestParam String user_name, Pageable pageable) {
-        return this.orderRepository.findOrderByAccount(user_name, pageable);
-    }
+    // @GetMapping("/account/{user_name}/order")
+    // public Page<Orders> getProductToCategory(@RequestParam String user_name,
+    // Pageable pageable) {
+    // return this.orderRepository.findOrderByAccount(user_name, pageable);
+    // }
 
-    @PostMapping("/account/{user_name}/order")
-    public Orders createOrderToAccount(@PathVariable(value = "user_name") String user_name,
-            @Valid @RequestBody Orders order) {
-        return this.orderServiceImpl.saveOrder(user_name, order);
-    }
+    // @PostMapping("/account/{user_name}/order")
+    // public Orders createOrderToAccount(@PathVariable(value = "user_name") String
+    // user_name,
+    // @Valid @RequestBody Orders order) {
+    // return this.orderServiceImpl.saveOrder(user_name, order);
+    // }
 
-    @PutMapping("/account/{user_name}/order/{product_id}")
-    public Orders updateOrderToAccount(@PathVariable Long product_id, @PathVariable String user_name,
-            @RequestBody Orders order) {
-        return this.orderServiceImpl.editOrder(product_id, order);
+    @PutMapping("/order/{order_id}")
+    public Orders updateOrderToAccount(@PathVariable Long order_id, @RequestBody Orders order) {
+        return this.orderServiceImpl.editOrder(order_id, order);
     }
 
     @DeleteMapping("/order/{id}")
